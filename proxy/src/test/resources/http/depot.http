@@ -1,0 +1,20 @@
+
+###
+# @name bucket-findall
+GET http://localhost:8080/buckets
+#X-Attic-Authority: ADMIN
+#X-Attic-User: admin
+
+###
+# @name upload-without-meta
+POST http://localhost:8080/files/agent/upload
+Accept: application/json
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+#X-Attic-Authority: AGENT
+#X-Attic-User: kim
+
+--WebAppBoundary--
+Content-Disposition: form-data; name="file"; filename="profile.jpg"
+
+< ../testfiles/profile.jpg
+--WebAppBoundary--

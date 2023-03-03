@@ -1,0 +1,7 @@
+###
+# @name hello
+GET http://localhost:7070/hello
+
+###
+# @name helloworld
+GET http://localhost:7070/helloworld

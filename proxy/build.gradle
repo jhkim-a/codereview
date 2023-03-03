@@ -1,0 +1,15 @@
+dependencies {
+    compileOnly "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+
+    implementation "com.github.mkopylec:charon-spring-webmvc:4.10.0"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+}
+
+bootJar {
+    enabled = true
+}
+
+//test {
+//    exclude '**/*'
+//}
