@@ -10,13 +10,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -29,6 +30,8 @@ public class OAuthTokenSupplier {
     private final AtomicBoolean isRefreshing = new AtomicBoolean(false);
 
     private String token;
+
+    private RestTemplate restTemplate = new RestTemplate();
 
     public String getToken() {
         if (StringUtils.isEmpty(token)) {
@@ -58,6 +61,8 @@ public class OAuthTokenSupplier {
     private void getAccessTokenInRefresh() {
         try {
             this.token = getAccessToken();
+        } catch (ObtainingTokenException e) {
+            log.error("Obtaining access token error: {}", e.getMessage());
         } finally {
             synchronized (this) {
                 this.notifyAll();
@@ -66,24 +71,29 @@ public class OAuthTokenSupplier {
     }
 
     private String getAccessToken() {
-        log.info("token refresh requested.");
+        log.info("Access token refresh requested.");
 
-        RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors()
             .add(new BasicAuthenticationInterceptor(properties.getUsername(), properties.getPassword()));
 
-        ResponseEntity<Token> response = restTemplate.exchange(
-            properties.getUrl(),
-            HttpMethod.POST,
-            new HttpEntity<>(parameters(), headers()),
-            Token.class
-        );
+        try {
+            ResponseEntity<Token> response = restTemplate.exchange(
+                properties.getUrl(),
+                HttpMethod.POST,
+                new HttpEntity<>(parameters(), headers()),
+                Token.class
+            );
 
-        if (response.getStatusCode() != HttpStatus.OK) {
-            log.error("Obtaining access token error (status:{})", response.getStatusCodeValue());
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new ObtainingTokenException(response.getStatusCode().name());
+            }
+
+            return response.getBody().getAccessToken();
+        } catch (HttpStatusCodeException e) {
+            throw new ObtainingTokenException(e);
+        } catch (ResourceAccessException e) {
+            throw new ObtainingTokenException(e);
         }
-
-        return (String) response.getBody().getAccessToken();
     }
 
     private HttpHeaders headers() {

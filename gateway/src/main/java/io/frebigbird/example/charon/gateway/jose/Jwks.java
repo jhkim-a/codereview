@@ -6,7 +6,6 @@ import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
-
 import javax.crypto.SecretKey;
 
 import com.nimbusds.jose.jwk.Curve;
