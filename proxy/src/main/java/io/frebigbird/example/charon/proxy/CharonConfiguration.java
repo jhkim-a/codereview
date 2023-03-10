@@ -60,14 +60,17 @@ public class CharonConfiguration {
             );
     }
 
+    /**
+     * return RetryConfig.<HttpResponse>custom()
+     *     .maxAttempts(10);
+     *
+     * return RetryConfig.<HttpResponse>custom()
+     *     .waitDuration(ZERO)
+     *     .retryOnResult(response -> response.getStatusCode().is5xxServerError())
+     *     .retryExceptions(Throwable.class);
+     */
     private RetryConfig.Builder<HttpResponse> retryConfiguration() {
         return from(ofDefaults());
-//        return RetryConfig.<HttpResponse>custom()
-//            .maxAttempts(10);
-//        return RetryConfig.<HttpResponse>custom()
-//            .waitDuration(ZERO)
-//            .retryOnResult(response -> response.getStatusCode().is5xxServerError())
-//            .retryExceptions(Throwable.class);
     }
 }
 
