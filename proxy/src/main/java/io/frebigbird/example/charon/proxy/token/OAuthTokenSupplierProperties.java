@@ -14,7 +14,7 @@ public class OAuthTokenSupplierProperties {
 
     private String password = "kakao";
 
-    private long waitTimeout = 10000L;
+    private long waitTimeout = 10_000L;
 
     public void setUrl(String url) {
         this.url = url;
