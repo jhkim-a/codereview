@@ -4,7 +4,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -23,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class OAuthTokenSupplier {
     private final OAuthTokenSupplierProperties properties;
 
@@ -32,6 +29,13 @@ public class OAuthTokenSupplier {
     private String token;
 
     private RestTemplate restTemplate = new RestTemplate();
+
+    public OAuthTokenSupplier(OAuthTokenSupplierProperties properties) {
+        this.properties = properties;
+        this.restTemplate = new RestTemplate();
+        this.restTemplate.getInterceptors()
+            .add(new MyBasicAuthenticationInterceptor(properties.getUsername(), properties.getPassword()));
+    }
 
     public String getToken() {
         if (StringUtils.isEmpty(token)) {
@@ -72,9 +76,6 @@ public class OAuthTokenSupplier {
 
     private String getAccessToken() {
         log.info("Access token refresh requested.");
-
-        restTemplate.getInterceptors()
-            .add(new BasicAuthenticationInterceptor(properties.getUsername(), properties.getPassword()));
 
         try {
             ResponseEntity<Token> response = restTemplate.exchange(
