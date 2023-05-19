@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,11 +18,20 @@ public class HelloWorldController {
     private int count = 0;
 
     @GetMapping("hello")
-    public String hello(
+    public String getHello(
         @RequestHeader("Authorization") String authorization
     ) {
         log.info("Authorization Header: " + authorization);
         return "hello !!!";
+    }
+
+    @PostMapping("hello")
+    public String postHello(
+        @RequestHeader("Authorization") String authorization,
+        @RequestBody User user
+    ) {
+        log.info("Authorization Header: " + authorization);
+        return "hello !!! " + user.getName();
     }
 
     @GetMapping("world")

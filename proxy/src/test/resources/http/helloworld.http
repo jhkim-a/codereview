@@ -3,8 +3,18 @@
 GET http://localhost:8080/helloworld/hello/unauthorized
 
 ###
-# @name proxy-helloworld-hello
+# @name proxy-helloworld-hello-get
 GET http://localhost:8080/helloworld/hello
+
+###
+# @name proxy-helloworld-hello-post
+POST http://localhost:8080/helloworld/hello
+content-type: application/json
+
+{
+  "id": "gdhong",
+  "name": "홍길동"
+}
 
 ###
 # @name proxy-helloworld-world
