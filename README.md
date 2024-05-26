@@ -1,6 +1,6 @@
 # 모듈 설명
 
-* `gateway` 토큰 발급 서버
+* `gateway` 토큰 발급 서버 입니다.
 * `helloworld` API 서버
 * `proxy` proxy 서버
 
@@ -13,3 +13,4 @@ one, without advanced features. Charon is a universal Spring Boot tool. It alrea
 its architecture provides an easy way to add new ones.
 
 * https://github.com/mkopylec/charon-spring-boot-starter
+
