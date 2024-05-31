@@ -1,7 +1,7 @@
 # 모듈 설명
 
 * `gateway` 토큰 발급 서버 입니다.
-* `helloworld` API 서버
+* `helloworld` API 서버 입니다.
 * `proxy` proxy 서버
 
 # Charon Spring Boot Starter
