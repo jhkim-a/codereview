@@ -45,6 +45,7 @@
         </dependencies>
     </dependencyManagement>
 
+    <!-- lombok 의존성 -->
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
