@@ -74,6 +74,26 @@ public class CharonConfiguration {
                     ))
                 )
                 .set(retryer().configuration(retryConfiguration()))
+            )
+             .add(requestMapping("bird-mapping")
+                .pathRegex("/helloworld/world.*")
+                .set(regexRequestPathRewriter().paths("/helloworld/(?<path>.*)", "/<path>"))
+                .set(restTemplate()
+                    .set(asList(
+                        new AuthorizationHeaderSetter(tokenSupplier),
+                        new OutgoingServerSetter("http", Arrays.asList("localhost:7072", "localhost:7071", "localhost:7070"))))
+                    .set(timeout()
+                        .connection(ofMillis(10_000))
+                        .read(ofMillis(10_000))
+                        .write(ofMillis(10_000)))
+                    .set(okClientHttpRequestFactoryCreator().httpClient(
+                        new OkHttpClient.Builder()
+                            .connectionPool(new ConnectionPool(5, 1, TimeUnit.MINUTES))
+                            .followRedirects(false)
+                            .followSslRedirects(false)
+                    ))
+                )
+                .set(retryer().configuration(retryConfiguration()))
             );
     }
 
